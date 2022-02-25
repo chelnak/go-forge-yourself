@@ -80,18 +80,6 @@ type ListModulesResponse struct {
 	Results    []Module   `json:"results"`
 }
 
-// Pagination represents the pagination information that is included in a response
-// from the forge API.
-type Pagination struct {
-	Limit   int    `json:"limit,omitempty"`
-	Offset  int    `json:"offset,omitempty"`
-	First   string `json:"first,omitempty"`
-	Prev    string `json:"prev,omitempty"`
-	Current string `json:"current,omitempty"`
-	Next    string `json:"next,omitempty"`
-	Total   int    `json:"total,omitempty"`
-}
-
 // Module represents a module entity from the forge API.
 type Module struct {
 	URI            string      `json:"uri,omitempty"`
@@ -113,16 +101,10 @@ type Module struct {
 	IssuesUrl      string      `json:"issues_url,omitempty"`
 }
 
-// HasNext returns true if the there are more pages to return.
-func (r *ListModulesResponse) HasNext() bool {
-	return r.Pagination.Next != ""
-}
-
 // ListModules returns a list of modules from the forge API. The response can be controlled
 // by passing in a ListModulesOptions struct.
 // https://forgeapi.puppet.com/#operation/getModules
 func (s *ModulesService) ListModules(ctx context.Context, opts *ListModulesOptions) (*ListModulesResponse, error) {
-
 	req, err := s.client.NewRequest(ctx, "GET", modulesEndpoint, nil, opts)
 	if err != nil {
 		return nil, err
@@ -133,12 +115,12 @@ func (s *ModulesService) ListModules(ctx context.Context, opts *ListModulesOptio
 		return nil, err
 	}
 
-	listModulesReponse := new(ListModulesResponse)
-	if err = json.NewDecoder(res.Body).Decode(listModulesReponse); err != nil {
+	response := new(ListModulesResponse)
+	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
 		return nil, err
 	}
 
-	return listModulesReponse, nil
+	return response, nil
 }
 
 // GetModule returns a single module from the forge API. The response can be controlled by passing in a GetModuleOptions struct.

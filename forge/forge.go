@@ -31,6 +31,23 @@ type Error struct {
 	Errors  []string `json:"errors"`
 }
 
+// Pagination represents the pagination information that is included in a response
+// from the forge API.
+type Pagination struct {
+	Limit   int    `json:"limit,omitempty"`
+	Offset  int    `json:"offset,omitempty"`
+	First   string `json:"first,omitempty"`
+	Prev    string `json:"prev,omitempty"`
+	Current string `json:"current,omitempty"`
+	Next    string `json:"next,omitempty"`
+	Total   int    `json:"total,omitempty"`
+}
+
+// HasNext returns true if the there are more pages to return.
+func (p *Pagination) HasNext() bool {
+	return p.Next != ""
+}
+
 // Client represents a forge http client instance.
 type Client struct {
 	BaseURL   *url.URL
@@ -39,7 +56,8 @@ type Client struct {
 	client    *http.Client
 	common    service
 
-	Modules *ModulesService
+	Modules  *ModulesService
+	Releases *ReleasesService
 }
 
 // ClientOption represents an option that can be passed to NewClient.
@@ -48,7 +66,6 @@ type ClientOption func(*Client)
 // NewClient returns a new Forge API Client. It can be configured with the
 // following options: BaseUrl, UserAgent, HTTPClient.
 func NewClient(options ...ClientOption) *Client {
-
 	baseURL, _ := url.Parse(defaultBaseUrl)
 
 	c := &Client{
@@ -64,6 +81,7 @@ func NewClient(options ...ClientOption) *Client {
 
 	c.common.client = c
 	c.Modules = (*ModulesService)(&c.common)
+	c.Releases = (*ReleasesService)(&c.common)
 
 	return c
 }
