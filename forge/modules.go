@@ -33,7 +33,7 @@ type Module struct {
 	CurrentRelease struct{}    `json:"current_release,omitempty"` // object?
 	Releases       []struct{}  `json:"releases,omitempty"`        // array of object?
 	FeedbackScore  int         `json:"feedback_score,omitempty"`
-	IssuesUrl      string      `json:"issues_url,omitempty"`
+	IssuesURL      string      `json:"issues_url,omitempty"`
 }
 
 //ModulesService represents services for interactivng with modules
