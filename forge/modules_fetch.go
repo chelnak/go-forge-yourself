@@ -27,6 +27,11 @@ func (s *ModulesService) GetModule(ctx context.Context, slug string, opts GetMod
 		return nil, err
 	}
 
+	err = checkResponseError(res)
+	if err != nil {
+		return nil, err
+	}
+
 	module := new(Module)
 	if err = json.NewDecoder(res.Body).Decode(module); err != nil {
 		return nil, err
