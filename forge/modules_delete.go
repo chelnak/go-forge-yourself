@@ -11,7 +11,7 @@ type DeleteModuleParams struct {
 func (s *ModulesService) DeleteModule(ctx context.Context, slug string, params DeleteModuleParams) error {
 	moduleURI := modulesEndpoint + "/" + slug
 
-	req, err := s.client.NewRequest(ctx, "GET", moduleURI, nil, params)
+	req, err := s.client.NewRequest(ctx, "DELETE", moduleURI, nil, params)
 	if err != nil {
 		return err
 	}
