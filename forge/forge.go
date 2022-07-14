@@ -178,6 +178,10 @@ func (c *Client) NewRequest(ctx context.Context, method string, urlStr string, b
 
 // checkResponseError checks if response is an error.
 func checkResponseError(res *http.Response) error {
+	if res.StatusCode < 300 {
+		return nil
+	}
+
 	errRes := new(Error)
 	err := json.NewDecoder(res.Body).Decode(&errRes)
 

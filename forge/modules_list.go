@@ -55,6 +55,11 @@ func (s *ModulesService) ListModules(ctx context.Context, opts *ListModulesOptio
 		return nil, err
 	}
 
+	err = checkResponseError(res)
+	if err != nil {
+		return nil, err
+	}
+
 	response := new(ListModulesResponse)
 	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
 		return nil, err

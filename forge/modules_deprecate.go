@@ -31,10 +31,11 @@ func (s *ModulesService) DeprecateModule(ctx context.Context, slug string, param
 	res, err := s.client.client.Do(req)
 	if err != nil {
 		return err
-	} else if res.StatusCode != 204 {
-		if err = checkResponseError(res); err != nil {
-			return err
-		}
+	}
+
+	err = checkResponseError(res)
+	if err != nil {
+		return err
 	}
 
 	return nil
