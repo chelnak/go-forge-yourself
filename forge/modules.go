@@ -1,10 +1,5 @@
 package forge
 
-import (
-	"context"
-	"encoding/json"
-)
-
 const (
 	modulesEndpoint = "modules"
 
@@ -19,66 +14,6 @@ const (
 	ModuleGroupBase ModuleGroup = "base"
 	ModuleGroupUtil ModuleGroup = "pe_only"
 )
-
-//ModulesService represents services for interactivng with modules
-// related endpoints of the forge API.
-type ModulesService service
-
-// SortOption represents the desired order in which to return results.
-type SortOption string
-
-// Endorsement indicates whether a module is endorsed through the
-// Supported, Approved or Partner Supported programs, or null if
-// not endorsed.
-type Endorsement string
-
-// ModuleGroup indicates whether or not a module is licensed for use by
-// Puppet Enterprise customers only, indicated by a value of pe_only,
-// for all other modules this value will be base.
-type ModuleGroup string
-
-// ListModulesOptions represents the options that can be passed to the ListModules method.
-type ListModulesOptions struct {
-	Limit                  int           `url:"limit,omitempty"`
-	Offset                 int           `url:"offset,omitempty"`
-	SortBy                 SortOption    `url:"sort_by,omitempty"`
-	Tag                    string        `url:"tag,omitempty"`
-	Owner                  string        `url:"owner,omitempty"`
-	WithTasks              bool          `url:"with_tasks,omitempty"`
-	WithPlans              bool          `url:"with_plans,omitempty"`
-	WithPDK                bool          `url:"with_pdk,omitempty"`
-	Premium                bool          `url:"premium,omitempty"`
-	ExcludePremium         bool          `url:"exclude_premium,omitempty"`
-	Endorsements           []Endorsement `url:"endorsements,omitempty"`
-	OperatingSystem        string        `url:"operating_system,omitempty"`
-	OperatingSystemRelease string        `url:"operating_system_release,omitempty"`
-	PERequirement          string        `url:"pe_requirement,omitempty"`
-	PuppetRequirement      string        `url:"puppet_requirement,omitempty"`
-	WithMinimumScore       int           `url:"with_minimum_score,omitempty"`
-	ModuleGroups           []ModuleGroup `url:"module_groups,omitempty"`
-	ShowDeleted            bool          `url:"show_deleted,omitempty"`
-	HideDeprecated         bool          `url:"hide_deprecated,omitempty"`
-	OnlyLatest             bool          `url:"only_latest,omitempty"`
-	Slugs                  []string      `url:"slugs,omitempty"`
-	WithHTML               bool          `url:"with_html,omitempty"`
-	IncludeFields          []string      `url:"include_fields,omitempty"`
-	ExcludeFields          []string      `url:"exclude_fields,omitempty"`
-	StartsWith             string        `url:"starts_with,omitempty"`
-	WithReleaseSince       string        `url:"with_release_since,omitempty"`
-}
-
-// GetModuleOptions represents the options that can be passed to the GetModule method.
-type GetModuleOptions struct {
-	WithHTML      bool     `url:"with_html,omitempty"`
-	IncludeFields []string `url:"include_fields,omitempty"`
-	ExcludeFields []string `url:"exclude_fields,omitempty"`
-}
-
-// ListModulesResponse is the response from the ListModules method.
-type ListModulesResponse struct {
-	Pagination Pagination `json:"pagination"`
-	Results    []Module   `json:"results"`
-}
 
 // Module represents a module entity from the forge API.
 type Module struct {
@@ -101,48 +36,19 @@ type Module struct {
 	IssuesUrl      string      `json:"issues_url,omitempty"`
 }
 
-// ListModules returns a list of modules from the forge API. The response can be controlled
-// by passing in a ListModulesOptions struct.
-// https://forgeapi.puppet.com/#operation/getModules
-func (s *ModulesService) ListModules(ctx context.Context, opts *ListModulesOptions) (*ListModulesResponse, error) {
-	req, err := s.client.NewRequest(ctx, "GET", modulesEndpoint, nil, opts)
-	if err != nil {
-		return nil, err
-	}
+//ModulesService represents services for interactivng with modules
+// related endpoints of the forge API.
+type ModulesService service
 
-	res, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
+// SortOption represents the desired order in which to return results.
+type SortOption string
 
-	response := new(ListModulesResponse)
-	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
-		return nil, err
-	}
+// Endorsement indicates whether a module is endorsed through the
+// Supported, Approved or Partner Supported programs, or null if
+// not endorsed.
+type Endorsement string
 
-	return response, nil
-}
-
-// GetModule returns a single module from the forge API. The response can be controlled by passing in a GetModuleOptions struct.
-// https://forgeapi.puppet.com/#operation/getModule
-func (s *ModulesService) GetModule(ctx context.Context, slug string, opts GetModuleOptions) (*Module, error) {
-
-	moduleURI := modulesEndpoint + "/" + slug
-
-	req, err := s.client.NewRequest(ctx, "GET", moduleURI, nil, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	res, err := s.client.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	module := new(Module)
-	if err = json.NewDecoder(res.Body).Decode(module); err != nil {
-		return nil, err
-	}
-
-	return module, nil
-}
+// ModuleGroup indicates whether or not a module is licensed for use by
+// Puppet Enterprise customers only, indicated by a value of pe_only,
+// for all other modules this value will be base.
+type ModuleGroup string
