@@ -17,7 +17,7 @@ import (
 
 // Constants
 const (
-	defaultBaseURL   = "https://forgeapi.puppet.com/v3/"
+	DefaultBaseURL   = "https://forgeapi.puppet.com/v3/"
 	defaultUserAgent = "go-forge-yourself/0.0.0"
 )
 
@@ -67,7 +67,7 @@ type ClientOption func(*Client)
 // NewClient returns a new Forge API Client. It can be configured with the
 // following options: BaseUrl, UserAgent, HTTPClient.
 func NewClient(options ...ClientOption) *Client {
-	baseURL, _ := url.Parse(defaultBaseURL)
+	baseURL, _ := url.Parse(DefaultBaseURL)
 
 	c := &Client{
 		client:    &http.Client{},
