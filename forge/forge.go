@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -173,6 +174,20 @@ func (c *Client) NewRequest(ctx context.Context, method string, urlStr string, b
 		req.Header.Set("User-Agent", c.UserAgent)
 	}
 	return req, nil
+}
+
+// checkResponseError checks if response is an error.
+func checkResponseError(res *http.Response) error {
+	errRes := new(Error)
+	err := json.NewDecoder(res.Body).Decode(&errRes)
+
+	if err != nil {
+		return err
+	} else if errRes.Message != "" {
+		return errors.New(errRes.Message)
+	}
+
+	return nil
 }
 
 // addOptions takes a URL and a list of query options and returns a new URL
